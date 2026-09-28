@@ -1,6 +1,6 @@
 [project]
 name = "django-verifactu"
-version = "0.1.0"
+version = "0.2.0"
 description = "VERI*FACTU para Django: registros de facturación encadenados, remitidos a la AEAT, con código QR y verificación"
 readme = "README.md"
 authors = [{ name = "Gabriel Rueda Rodriguez", email = "hola@gabrielrueda.dev" }]

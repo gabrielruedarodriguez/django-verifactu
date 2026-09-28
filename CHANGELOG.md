@@ -1,6 +1,6 @@
 # Cambios
 
-## Sin publicar
+## 0.2.0 (2026-09-28)
 
 - Una Agent Skill para agentes de programación (Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot y otros) y `manage.py verifactu_skill` para instalarla en el proyecto.
 - `Notice.unsent`: el número de registros sin remitir de un aviso, para redactarlo en otro idioma.

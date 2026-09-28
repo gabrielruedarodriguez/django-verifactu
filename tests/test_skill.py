@@ -38,8 +38,13 @@ def test_the_skill_follows_the_agent_skills_specification():
 
 
 def test_the_skill_names_the_library_version_it_describes():
-    meta, _ = skill()
-    assert meta["metadata"]["library-version"] == version("django-verifactu")
+    meta, text = skill()
+    current = version("django-verifactu")
+    assert meta["metadata"]["library-version"] == current
+    assert f"django-verifactu {current}." in text
+    texts = [path.read_text(encoding="utf-8") for path in SOURCE.rglob("*.md")]
+    pinned = {found for text in texts for found in re.findall(r"django-verifactu==([\w.]+)", text)}
+    assert pinned == {current}
 
 
 def test_every_reference_is_linked_from_the_skill():

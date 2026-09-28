@@ -11,7 +11,7 @@ Lee este archivo antes de poner en producción un sistema informático de factur
 5. **Sin remitente no hay remisión.** Nada se envía si `verifactu_send --loop` (o `send_pending()` cada minuto) no está en marcha, y la Orden exige reintentar al menos una vez cada hora.
 6. **El aviso de registros sin remitir es obligatorio.** El admin de la librería lo muestra encima de sus listados, pero tus usuarios solo lo ven si pintas `{% verifactu_notices %}` donde trabajan.
 7. **Dónde va el QR en la factura lo decides tú.** `{% verifactu_qr sale %}` dibuja el código, el texto que lo precede y la leyenda, pero no su posición ni el tamaño de letra del resto de la factura.
-8. **Actualizar django-verifactu afecta a tu declaración responsable.** **Interpretación** de la FAQ para desarrolladores, apartado 5 (citada abajo), que pide mencionar la versión concreta del componente: fija la versión exacta en tus dependencias (por ejemplo `django-verifactu==0.1.0`) y actualiza la librería y la declaración a la vez.
+8. **Actualizar django-verifactu afecta a tu declaración responsable.** **Interpretación** de la FAQ para desarrolladores, apartado 5 (citada abajo), que pide mencionar la versión concreta del componente: fija la versión exacta en tus dependencias (por ejemplo `django-verifactu==0.2.0`) y actualiza la librería y la declaración a la vez.
 
 ## Quién responde: Ley 58/2003, General Tributaria
 

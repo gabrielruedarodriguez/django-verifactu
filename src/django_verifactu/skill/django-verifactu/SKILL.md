@@ -10,14 +10,14 @@ description: >-
   declaración responsable. Use it for any VERI*FACTU or AEAT invoicing task in a Django project.
 license: Apache-2.0
 metadata:
-  library-version: "0.1.0"
+  library-version: "0.2.0"
 ---
 
 # django-verifactu
 
 django-verifactu genera, encadena y remite a la AEAT los registros de facturación VERI*FACTU de las facturas que el proyecto guarda en sus propios modelos, imprime su código QR, muestra los avisos que exige la Orden HAC/1177/2024 y verifica que la base de datos y la AEAT coinciden. El sistema informático de facturación es el proyecto que integra la librería: su productor responde de que cumpla la normativa y firma la declaración responsable.
 
-Esta skill describe django-verifactu 0.1.0. Si el proyecto tiene otra versión instalada, pide al usuario que ejecute `python manage.py verifactu_skill` para instalar la skill de su versión.
+Esta skill describe django-verifactu 0.2.0. Si el proyecto tiene otra versión instalada, pide al usuario que ejecute `python manage.py verifactu_skill` para instalar la skill de su versión.
 
 Antes de escribir código de un área, lee su referencia (tabla al final). No completes de memoria lo que no esté aquí ni en las referencias.
 
@@ -43,7 +43,7 @@ Antes de escribir código de un área, lee su referencia (tabla al final). No co
 
 Sigue los pasos en orden. Cada uno termina con su comprobación.
 
-1. **Instalar.** Añade `django-verifactu==0.1.0` a las dependencias, `"django_verifactu"` a `INSTALLED_APPS` junto a `"django.contrib.contenttypes"`, y ejecuta `python manage.py migrate`. Necesita `USE_TZ = True`.
+1. **Instalar.** Añade `django-verifactu==0.2.0` a las dependencias, `"django_verifactu"` a `INSTALLED_APPS` junto a `"django.contrib.contenttypes"`, y ejecuta `python manage.py migrate`. Necesita `USE_TZ = True`.
 2. **Configurar.** Escribe `VERIFACTU` en settings con `PRODUCTION = False`, `SOFTWARE` y `TAXPAYERS` (references/configuracion.md). Comprueba: `python manage.py check`.
 3. **Vincular el modelo.** Añade `VerifactuRecords()` al modelo de facturas; no necesita migración (references/emision.md).
 4. **Traducir la factura.** Escribe una sola función que convierta una factura del proyecto en `django_verifactu.aeat.domain.Invoice`, y úsala tanto para `register` como para `amend` (references/emision.md).
