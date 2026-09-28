@@ -1,0 +1,64 @@
+[project]
+name = "django-verifactu"
+version = "0.1.0"
+description = "VERI*FACTU para Django: registros de facturación encadenados, remitidos a la AEAT, con código QR y verificación"
+readme = "README.md"
+authors = [{ name = "Gabriel Rueda Rodriguez", email = "hola@gabrielrueda.dev" }]
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+keywords = ["verifactu", "aeat", "django", "invoicing", "facturacion", "spain"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Django",
+    "Framework :: Django :: 5.2",
+    "Framework :: Django :: 6.0",
+    "Framework :: Django :: 6.1",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Office/Business :: Financial :: Accounting",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "certifi>=2024",
+    "cryptography>=43",
+    "django>=5.2",
+    "httpx>=0.28",
+    "lxml>=6.0.1",
+    "segno>=1.6",
+]
+
+[project.urls]
+Homepage = "https://github.com/gabrielruedarodriguez/django-verifactu"
+Repository = "https://github.com/gabrielruedarodriguez/django-verifactu"
+Issues = "https://github.com/gabrielruedarodriguez/django-verifactu/issues"
+Changelog = "https://github.com/gabrielruedarodriguez/django-verifactu/blob/main/CHANGELOG.md"
+Author = "https://gabrielrueda.dev"
+
+[dependency-groups]
+dev = [
+    "psycopg[binary]>=3.2",
+    "pytest>=8",
+    "pytest-django>=4.9",
+    "ruff>=0.16,<0.17",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+pythonpath = ["."]
+addopts = "-p no:cacheprovider"
+
+[tool.ruff]
+line-length = 100
+extend-exclude = ["src/django_verifactu/migrations"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13"]
+build-backend = "uv_build"
