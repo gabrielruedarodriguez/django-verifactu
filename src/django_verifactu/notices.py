@@ -13,11 +13,14 @@ from django_verifactu.verifying import chain_problems
 _LATE = timedelta(seconds=240)
 # The latest records of each chain checked for every notice.
 _RECENT = 20
+_UNSENT = "could not be sent to the AEAT yet"
 
 
+# message is in English; unsent (0 for chain problems) lets a template word it in Spanish.
 class Notice(NamedTuple):
     taxpayer_tax_id: str
     message: str
+    unsent: int = 0
 
 
 # What the user must be shown now (Orden HAC/1177/2024): records not sent because of an
@@ -32,7 +35,7 @@ def notices(*, taxpayer_tax_id: str | None = None) -> list[Notice]:
     installations = installations.annotate(head=Subquery(heads.values("position")[:1]))
     installations = list(installations.order_by("taxpayer_tax_id", "generation"))
     found = [
-        Notice(tax_id, f"{count} VERI*FACTU records of {tax_id} could not be sent to the AEAT yet")
+        Notice(tax_id, f"{count} VERI*FACTU records of {tax_id} {_UNSENT}", count)
         for tax_id, count in _unsent(installations, using)
     ]
     for installation in installations:

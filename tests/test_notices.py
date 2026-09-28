@@ -48,7 +48,7 @@ def test_unsent_records_are_counted_from_a_failed_submission_until_all_are_sent(
     send_pending()
     registered("A-3")
     [notice] = notices()
-    assert notice.taxpayer_tax_id == "89890001K"
+    assert (notice.taxpayer_tax_id, notice.unsent) == ("89890001K", 3)
     assert "3 VERI*FACTU records of 89890001K could not be sent" in notice.message
     aeat.failure = None
     later(monkeypatch, 61)
@@ -74,8 +74,9 @@ def test_each_taxpayer_gets_its_own_notices(aeat):
 def test_a_broken_chain_among_the_latest_records_is_a_notice():
     first, _ = registered("A-1", "A-2")
     tamper(first, fingerprint="0" * 64)
-    found = messages()
-    assert len(found) == 2 and all("chain" in message for message in found)
+    found = notices()
+    assert len(found) == 2 and all("chain" in notice.message for notice in found)
+    assert {notice.unsent for notice in found} == {0}
 
 
 @pytest.mark.django_db(transaction=True)

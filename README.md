@@ -216,7 +216,7 @@ Muestra los avisos donde trabajan tus usuarios:
 
 Sin argumento, la etiqueta muestra los avisos de todos los obligados tributarios, lo que conviene a los operadores. Con uno, muestra solo los de ese obligado tributario, y ninguno si el valor está vacío, de modo que un usuario cuya empresa aún no tiene NIF nunca ve los de otro. La plantilla `django_verifactu/notices.html` se puede sobrescribir.
 
-`django_verifactu.notices.notices(taxpayer_tax_id=None)` devuelve la misma lista, cada aviso con su `taxpayer_tax_id` y su `message`, y el admin los muestra encima de sus listados. Cuestan unas pocas consultas por obligado tributario. Los problemas de cadena se buscan en los 20 registros más recientes de cada cadena; `verifactu_verify` comprueba las cadenas completas.
+`django_verifactu.notices.notices(taxpayer_tax_id=None)` devuelve la misma lista, cada aviso con su `taxpayer_tax_id`, su `message` en inglés y, en los avisos de registros sin remitir, su número en `unsent`, para redactarlo en tu idioma al sobrescribir la plantilla. El admin los muestra encima de sus listados. Cuestan unas pocas consultas por obligado tributario. Los problemas de cadena se buscan en los 20 registros más recientes de cada cadena; `verifactu_verify` comprueba las cadenas completas.
 
 ## Imprimir el código QR
 
@@ -269,6 +269,20 @@ python manage.py verifactu_new_installation B12345674
 ```
 
 Los siguientes registros reciben un nuevo número de instalación y empiezan con `PrimerRegistro`. Los registros pendientes de la cadena anterior se siguen remitiendo primero.
+
+## Integrar con un agente de IA
+
+django-verifactu incluye una [Agent Skill](https://agentskills.io) que enseña a los agentes de programación a integrarla: las reglas que no se pueden romper, el flujo de integración, cómo corregir cada tipo de error, las pruebas y los requisitos legales, con las citas de la normativa. Instálala en tu proyecto en cuanto añadas `django_verifactu` a `INSTALLED_APPS`, antes de configurar `VERIFACTU`:
+
+```console
+python manage.py verifactu_skill
+```
+
+El comando la copia en `.agents/skills/django-verifactu`, que leen Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode y otros, y en `.claude/skills/django-verifactu` para Claude Code. Usa `--agent kiro` para Kiro y `--path` si el proyecto no es la raíz del repositorio git.
+
+La skill describe la versión instalada de la librería. Vuelve a ejecutar el comando al actualizarla; `python manage.py verifactu_skill --check` falla si la copia está desactualizada, por ejemplo en la integración continua. El comando reemplaza solo sus propias carpetas.
+
+La skill ayuda, pero no sustituye tu revisión: tú respondes del sistema de facturación que construyes.
 
 ## El núcleo de la AEAT
 

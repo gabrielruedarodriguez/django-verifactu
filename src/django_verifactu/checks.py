@@ -8,6 +8,7 @@ from django.core.checks import CheckMessage, Error, Warning, register
 from django.utils.module_loading import import_string
 
 from django_verifactu import conf
+from django_verifactu.aeat.domain import Party
 from django_verifactu.aeat.submission import validate_header
 from django_verifactu.aeat.transport import client_ssl_context
 from django_verifactu.aeat.validation import validate_software
@@ -33,6 +34,10 @@ def check_settings(app_configs, **kwargs) -> list[Error]:
         conf.time_zone()
     except (AttributeError, KeyError, TypeError, ValueError, ZoneInfoNotFoundError) as error:
         message = f"VERIFACTU['SOFTWARE'] or ['TIME_ZONE'] is invalid: {error!r}"
+        return [*errors, Error(message, id="django_verifactu.E003")]
+    texts = all(isinstance(getattr(software, field), str) for field in _LIMITS)
+    if not isinstance(software.producer, Party) or not texts:
+        message = "VERIFACTU['SOFTWARE'] needs a Party producer and text name, system_id, version"
         return [*errors, Error(message, id="django_verifactu.E003")]
     for field, limit in _LIMITS.items():
         value = getattr(software, field)

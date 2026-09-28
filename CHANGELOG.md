@@ -1,5 +1,11 @@
 # Cambios
 
+## Sin publicar
+
+- Una Agent Skill para agentes de programación (Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot y otros) y `manage.py verifactu_skill` para instalarla en el proyecto.
+- `Notice.unsent`: el número de registros sin remitir de un aviso, para redactarlo en otro idioma.
+- `manage.py check` informa con `django_verifactu.E003` de un `SOFTWARE` cuyo productor no es un `Party` o cuyo nombre, identificador o versión no son texto.
+
 ## 0.1.0 (2026-09-28)
 
 Primera versión.

@@ -31,8 +31,11 @@ def test_invalid_settings_are_reported(settings, change, expected):
     assert error_ids() == expected
 
 
-def test_invalid_software_is_reported(settings):
-    software = {**settings.VERIFACTU["SOFTWARE"], "system_id": "fa"}
+@pytest.mark.parametrize(
+    "change", [{"system_id": "fa"}, {"producer": {"name": "Productor", "tax_id": "89890003T"}}]
+)
+def test_invalid_software_is_reported(settings, change):
+    software = {**settings.VERIFACTU["SOFTWARE"], **change}
     settings.VERIFACTU = {**settings.VERIFACTU, "SOFTWARE": software}
     assert error_ids() == ["django_verifactu.E003"]
 

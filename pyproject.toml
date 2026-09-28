@@ -44,6 +44,7 @@ dev = [
     "psycopg[binary]>=3.2",
     "pytest>=8",
     "pytest-django>=4.9",
+    "pyyaml>=6",
     "ruff>=0.16,<0.17",
 ]
 
