@@ -1,9 +1,13 @@
+import os
 import ssl
+import stat
+import tempfile
 
 import httpx
 import pytest
 from lxml import etree
 
+from django_verifactu.aeat import transport
 from django_verifactu.aeat.codes import SubmissionStatus
 from django_verifactu.aeat.soap import AeatFault, NotDelivered, OutcomeUnknown, Refused
 from django_verifactu.aeat.submission import build_submission
@@ -25,6 +29,48 @@ def test_loads_a_password_protected_pkcs12():
 def test_wrong_password_is_rejected():
     with pytest.raises(ValueError):
         client_ssl_context(fake_pkcs12(b"secret"), "wrong")
+
+
+@pytest.fixture
+def windows_files(monkeypatch):
+    """Behave like Windows, where a temporary file cannot be opened again by name while open."""
+    files = []
+    original_named_temporary_file = tempfile.NamedTemporaryFile
+    original_load_cert_chain = ssl.SSLContext.load_cert_chain
+
+    def named_temporary_file(*args, **kwargs):
+        file = original_named_temporary_file(*args, **kwargs)
+        files.append(file)
+        return file
+
+    def load_cert_chain(self, certfile, *args, **kwargs):
+        if any(file.name == certfile and not file.closed for file in files):
+            raise PermissionError(13, "Permission denied", certfile)
+        if os.name == "posix":
+            assert stat.S_IMODE(os.stat(certfile).st_mode) == 0o600
+        return original_load_cert_chain(self, certfile, *args, **kwargs)
+
+    monkeypatch.setattr(transport.tempfile, "NamedTemporaryFile", named_temporary_file)
+    monkeypatch.setattr(ssl.SSLContext, "load_cert_chain", load_cert_chain)
+    return files
+
+
+def test_loads_the_certificate_where_open_files_cannot_be_reopened(windows_files):
+    assert isinstance(client_ssl_context(fake_pkcs12(b"secret"), "secret"), ssl.SSLContext)
+    assert windows_files
+    assert not any(os.path.exists(file.name) for file in windows_files)
+
+
+def test_deletes_the_key_file_when_ssl_rejects_it(windows_files, monkeypatch):
+    def reject(self, certfile, *args, **kwargs):
+        assert os.path.exists(certfile)
+        raise ssl.SSLError("rejected")
+
+    monkeypatch.setattr(ssl.SSLContext, "load_cert_chain", reject)
+    with pytest.raises(ssl.SSLError):
+        client_ssl_context(fake_pkcs12(b"secret"), "secret")
+    assert windows_files
+    assert not any(os.path.exists(file.name) for file in windows_files)
 
 
 @pytest.mark.parametrize(

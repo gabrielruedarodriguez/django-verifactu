@@ -1,3 +1,4 @@
+import os
 import ssl
 import tempfile
 
@@ -46,11 +47,16 @@ def client_ssl_context(pkcs12_data: bytes, password: str) -> ssl.SSLContext:
     )
     context = ssl.create_default_context(cafile=certifi.where())
     # ssl only loads client certificates from files: the key is written encrypted and
-    # the file is deleted as soon as it has been read.
-    with tempfile.NamedTemporaryFile(suffix=".pem") as file:
-        file.write(pem)
-        file.flush()
+    # the file is deleted as soon as it has been read. It is closed before ssl opens it
+    # by name, because Windows does not allow opening a file that is still open.
+    # NamedTemporaryFile creates it readable and writable only by the current user.
+    file = tempfile.NamedTemporaryFile(suffix=".pem", delete=False)
+    try:
+        with file:
+            file.write(pem)
         context.load_cert_chain(file.name, password=password or None)
+    finally:
+        os.unlink(file.name)
     return context
 
 
